@@ -1,0 +1,65 @@
+Funktion test:
+    Zahl: i, Zahl f -> Zahl, Zahl
+
+        wenn i < f:
+            i = i + 5
+        sonst wenn:
+        sonst:
+            f + 10.0
+
+        Ergebnis: f, i
+
+Funktion test:
+    Zahl: i, Zahl: f -> Zahl
+
+    Solange i >= 0:
+        f += f;
+        --i;
+
+    Ergebnis: f
+
+Funktion ausgabe:
+    Zahl: i -> Nichts
+
+    ausgabe(i)
+
+Zahl: j = 5
+Konstante Zahl: i = 5, j = 10;
+Konstanter Text: str = "Fix mich!"
+
+test(5, 6.0)
+test2()
+
+Operatoren:
+General:
+    : , -> := . ;
+Braces:
+    ( ) [ ] { }
+Arithmetik:
+    + - * / % 
+Comp:
+    < > <= >= != =
+Logical:
+    und oder
+
+Text:
+    "
+    '
+
+Keywords:
+- Funktion
+- wenn
+- sonst
+- Ergebnis
+- Zahl
+- Nichts
+- Text
+- Konstanter
+- Konstante
+- Konstantes
+- Solange
+
+Name: [_A-Za-z][_A-Za-z0-9]*
+
+Features:
+- Überladen

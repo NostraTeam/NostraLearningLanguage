@@ -1,0 +1,29 @@
+Funktion test:
+    Zahl: i, Zahl f -> Zahl, Zahl
+
+    wenn i < f:
+        i = i + 5
+    sonst wenn:
+    sonst:
+        f + 10.0
+
+    Ergebnis: f, i
+
+Funktion test:
+    Zahl: i, Zahl: f -> Zahl
+
+    Solange i >= 0:
+        f := f + f;
+
+    Ergebnis: f
+
+Funktion ausgabe:
+    Zahl: i -> Nichts
+
+    ausgabe(i)
+
+Zahl: j = 5
+Konstante Zahl: i = 5, j = 10;
+
+test(5, 6.0)
+test2()
