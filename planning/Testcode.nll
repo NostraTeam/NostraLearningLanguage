@@ -4,6 +4,8 @@ Funktion test:
     wenn i < f:
         i = i + 5
     sonst wenn:
+        i = i + 5
+        f + 10.0
     sonst:
         f + 10.0
 
@@ -27,3 +29,4 @@ Konstante Zahl: i = 5, j = 10;
 
 test(5, 6.0)
 test2()
+            

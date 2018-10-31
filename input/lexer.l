@@ -1,63 +1,244 @@
 %{
     #include <iostream>
+    #include "parser.hpp"
+
+    int indentCounter = 0;
+    bool foundNonWhitespace = false;
+    int loc = 0;
 %}
 
 %option yylineno
 
+UNSIGNED_NUMBER [0-9]+(\.[0-9]+)?
+
 %%
-Funktion {std::cout << "Funktion\n";}
-wenn {std::cout << "wenn\n";}
-sonst {std::cout << "sonst\n";}
-Ergebnis {std::cout << "Ergebnis\n";}
-Zahl {std::cout << "Zahl\n";}
-Nichts {std::cout << "Nichts\n";}
-Text {std::cout << "Text\n";}
-Konstanter {std::cout << "Konstanter\n";}
-Konstante {std::cout << "Konstante\n";}
-Konstantes {std::cout << "Konstantes\n";}
-Solange {std::cout << "Solange\n";}
-und {std::cout << "und\n";}
-oder {std::cout << "oder\n";}
+Funktion    {
+                foundNonWhitespace = true;
+                return FUNCTION;
+            }
 
-:  {std::cout << "Colon\n";}
-,  {std::cout << "Comma\n";}
--> {std::cout << "Arrow\n";}
-:= {std::cout << "Assign\n";}
-\.  {std::cout << "Dot\n";}
-;  {std::cout << "Semicolon\n";}
-\( {std::cout << "Round_Bracket_Open\n";}
-\) {std::cout << "Round_Bracket_Close\n";}
-\[ {std::cout << "Square_Bracket_Open\n";}
-\] {std::cout << "Square_Bracket_Close\n";}
-\{ {std::cout << "Curly_Bracket_Open\n";}
-\} {std::cout << "Curly_Bracket_Close\n";}
-\+ {std::cout << "Plus\n";}
--  {std::cout << "Minus\n";}
-\* {std::cout << "Star\n";}
-\/  {std::cout << "Slash\n";}
-%   {std::cout << "Percent\n";}
-\<  {std::cout << "Angular_Bracket_Open\n";}
-\>  {std::cout << "Angular_Bracket_Close\n";}
-\<= {std::cout << "Smaller_EQ\n";}
-\>= {std::cout << "Greater_EQ\n";}
-!=  {std::cout << "Unequal\n";}
-=   {std::cout <<  "Equal\n";}
+wenn        {
+                foundNonWhitespace = true;
+                return IF;
+            }
+
+sonst       {
+                foundNonWhitespace = true;
+                return ELSE;
+            }
+
+Ergebnis    {
+                foundNonWhitespace = true;
+                return RESULT;
+            }
+
+Zahl        {
+                foundNonWhitespace = true;
+                return NUMBER;
+            }
+
+Nichts      {
+                foundNonWhitespace = true;
+                return NOTHING;
+            }
+
+Text        {
+                foundNonWhitespace = true;
+                return TEXT;
+            }
+
+Konstanter  {
+                foundNonWhitespace = true;
+                return CONSTANT;
+            }
+
+Konstante   {
+                foundNonWhitespace = true;
+                return CONSTANT;
+            }
+
+Konstantes  {
+                foundNonWhitespace = true;
+                return CONSTANT;
+            }
+
+Solange     {
+                foundNonWhitespace = true;
+                return WHILE;
+            }
+
+und         {
+                foundNonWhitespace = true;
+                return AND;
+            }
+
+oder        {
+                foundNonWhitespace = true;
+                return OR;
+            }
+
+:   {
+        foundNonWhitespace = true;
+        return OP_COLON;
+    }
+
+,   {
+        foundNonWhitespace = true;
+        return OP_COMMA;
+    }
+
+->  {
+        foundNonWhitespace = true;
+        return OP_ARROW;
+    }
+
+:=  {
+        foundNonWhitespace = true;
+        return OP_ASSIGN;
+    }
+
+\.  {
+        foundNonWhitespace = true;
+        return OP_DOT;
+    }
+
+;   {
+        foundNonWhitespace = true;
+        return OP_SEMICOLON;
+    }
+
+\(  {
+        foundNonWhitespace = true;
+        return OP_OPEN_ROUND_BRACKET;
+    }
+
+\)  {
+        foundNonWhitespace = true;
+        return OP_CLOSE_ROUND_BRACKET;
+    }
+
+\[  {
+        foundNonWhitespace = true;
+        return OP_OPEN_SQUARE_BRACKET;
+    }
+
+\]  {
+        foundNonWhitespace = true;
+        return OP_CLOSE_SQUARE_BRACKET;
+    }
+
+\{  {
+        foundNonWhitespace = true;
+        return OP_OPEN_CURLY_BRACKET;
+    }
+
+\}  {
+        foundNonWhitespace = true;
+        return OP_CLOSE_CURLY_BRACKET;
+    }
+
+\+  {
+        foundNonWhitespace = true;
+        return OP_PLUS;
+    }
+
+-   {
+        foundNonWhitespace = true;
+        return OP_MINUS;
+    }
+
+\*  {
+        foundNonWhitespace = true;
+        return OP_STAR;
+    }
+
+\/  {
+        foundNonWhitespace = true;
+        return OP_SLASH;
+    }
+
+%   {
+        foundNonWhitespace = true;
+        return OP_PERCENT;
+    }
+
+\<  {
+        foundNonWhitespace = true;
+        return OP_OPEN_ANGULAR_BRACKET;
+    }
+
+\>  {
+        foundNonWhitespace = true;
+        return OP_CLOSE_ANGULAR_BRACKET;
+    }
+
+\<= {
+        foundNonWhitespace = true;
+        return OP_SMALLER_EQ;
+    }
+
+\>= {
+        foundNonWhitespace = true;
+        return OP_GREATER_EQ;
+    }
+
+!=  {
+        foundNonWhitespace = true;
+        return OP_UNEQUAL;
+    }
+
+=   {
+        foundNonWhitespace = true;
+        return OP_EQUAL;
+    }
 
 
-\"
-\'
+#.*                     {
+                            
+                        }
 
-\+?[0-9]+(\.[0-9]+)?       {std::cout << "Pos_Zahl\n";}
--[0-9]+(\.[0-9]+)?       {std::cout << "Neg_Zahl\n";}
-[_A-Za-z][_A-Za-z0-9]* {std::cout << "Name\n";}
-[ \n\t]+ {}
-. {std::cout << "Error: " << yylineno << "\n";}
+\+?{UNSIGNED_NUMBER}    {
+                            foundNonWhitespace = true;
+                            return NUMBER_VALUE;
+                        }
+
+-{UNSIGNED_NUMBER}      {
+                            foundNonWhitespace = true;
+                            return NUMBER_VALUE;
+                        }
+
+[_A-Za-z][_A-Za-z0-9]*  {
+                            foundNonWhitespace = true;
+                            return NAME;
+                        }
+
+^([ ]{4}|\t)            {
+                            indentCounter++; 
+                        }
+
+([ ]{4}|\t)             {
+                            if(indentCounter > 0 && !foundNonWhitespace)
+                            {
+                                indentCounter++;
+                            }
+                        }
+
+\n                      {
+                            indentCounter = 0;
+                            foundNonWhitespace = false;
+                            loc++;
+                            return LINEBREAK;
+                        }
+
+[ \t]                   {
+
+                        }
+
+.                       {
+                            std::cout << "Flex: Invalid match: " << yytext << "\n";
+                            exit(-2);
+                        }
 %%
-int main()
-{
-    yylex();
-    return 0;
-}
 
 extern "C" int yywrap(void)
 {
