@@ -1,25 +1,13 @@
+i = 5 + 6 - call(a, b, c) * i
 
+i = 5 + (6 - (call(a, b, c) * i))
 
+Konstante Zahl: z := 4
+Konstantes Nichts: n := rofl
 
-Funktion test:
-    Zahl: i, Zahl: f -> Zahl, Zahl
+Funktion test: Zahl: i, Zahl: f -> Zahl, Zahl
 
-    i := i + 5
-    test()
-    test(lol)
-    test(xd, lol)
-    test(xd, lol, rofl)
+Solange i > 5:
 
-    i := call() + 10 - i / call(lol)
-
-# Dennis ist dumm
-Funktion test2:
-   Zahl: z, Text: t -> Nichts
-
-    i = 4
-
-    Solange x = 4:
-        i = 5
-
-
-
+Ergebnis: a, b, c, x > 0
+Ergebnis: Nichts

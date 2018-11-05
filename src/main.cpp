@@ -1,13 +1,13 @@
 
+#include <iostream>
+
 extern int yylex();
 extern int yyparse();
 
 int main()
 {
-    yyparse();
-    //   while(yylex())
-    //   {
-    //   }
+    if(yyparse() == 0)
+        std::cout << "ACCEPTED\n";
 
     return 0;
 }

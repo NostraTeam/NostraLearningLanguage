@@ -1,9 +1,8 @@
-Funktion test:
-    Zahl: i, Zahl f -> Zahl, Zahl
+Funktion test: Zahl: i, Zahl: f -> Zahl, Zahl
 
     wenn i < f:
         i = i + 5
-    sonst wenn:
+    sonst wenn i > f:
         i = i + 5
         f + 10.0
     sonst:
@@ -11,22 +10,21 @@ Funktion test:
 
     Ergebnis: f, i
 
-Funktion test:
-    Zahl: i, Zahl: f -> Zahl
+Funktion test: Zahl: i, Zahl: f -> Zahl
 
     Solange i >= 0:
-        f := f + f;
+        f := f + f
 
     Ergebnis: f
 
-Funktion ausgabe:
-    Zahl: i -> Nichts
+Funktion meine_ausgabe: Zahl: i -> Nichts
 
     ausgabe(i)
+    Ergebnis: Nichts
 
-Zahl: j = 5
-Konstante Zahl: i = 5, j = 10;
+Zahl: j := 5
+Konstante Zahl: i := 5, j := 10
 
 test(5, 6.0)
-test2()
+meine_ausgabe()
             

@@ -7,11 +7,9 @@
 
     extern void yyerror(const char *str);
 
-    extern int loc;
+    extern int yylineno;
     extern const char* yytext;
 %}
-
-%start translation_unit
 
 %union
 {
@@ -19,22 +17,21 @@
     const char *string;
 }
 
-%token FUNCTION
-%token IF
-%token ELSE
-%token RESULT
-%token NUMBER
-%token NOTHING
-%token TEXT
-%token CONSTANT
-%token WHILE
-%token AND
-%token OR
+%token KWD_FUNCTION
+%token KWD_IF
+%token KWD_ELSE
+%token KWD_RESULT
+%token KWD_NUMBER
+%token KWD_NOTHING
+%token KWD_TEXT
+%token KWD_CONSTANT
+%token KWD_WHILE
+%token KWD_AND
+%token KWD_OR
 
 %token OP_COLON
 %token OP_COMMA
 %token OP_ARROW
-%token OP_ASSIGN
 %token OP_DOT
 %token OP_SEMICOLON
 %token OP_OPEN_ROUND_BRACKET
@@ -43,154 +40,176 @@
 %token OP_CLOSE_SQUARE_BRACKET
 %token OP_OPEN_CURLY_BRACKET
 %token OP_CLOSE_CURLY_BRACKET
-%token OP_PLUS
-%token OP_MINUS
-%token OP_STAR
-%token OP_SLASH
-%token OP_PERCENT
-%token OP_OPEN_ANGULAR_BRACKET
-%token OP_CLOSE_ANGULAR_BRACKET
-%token OP_SMALLER_EQ
-%token OP_GREATER_EQ
-%token OP_UNEQUAL
-%token OP_EQUAL
 
 %token LINEBREAK
 
-%token <dval>   NUMBER_VALUE;
-%token <string> NAME;
+%token <dval>   NUMBER
+%token <string> IDENTIFIER
 
+%left OP_EQUAL OP_UNEQUAL
+
+%left OP_OPEN_ANGULAR_BRACKET OP_CLOSE_ANGULAR_BRACKET 
+      OP_SMALLER_EQ OP_GREATER_EQ
+
+%left OP_PLUS OP_MINUS
+
+%left OP_STAR OP_SLASH OP_PERCENT
+
+%right OP_ASSIGN
+/*
+%left OP_EQUAL OP_UNEQUAL
+
+%left OP_OPEN_ANGULAR_BRACKET OP_CLOSE_ANGULAR_BRACKET 
+      OP_SMALLER_EQ OP_GREATER_EQ
+
+%left OP_PLUS OP_MINUS
+
+%left OP_STAR OP_SLASH OP_PERCENT
+
+%right OP_ASSIGN
+*/
 %%
+
 translation_unit:
-    any_expression {std::cout << "translation_unit" << "\n";}
-    | translation_unit any_expression {std::cout << "translation_unit" << "\n";}
+      line
+    | translation_unit line
     ;
 
-any_expression:
-    function_defintion {std::cout << "any_expression" << "\n";}
-    | statements {std::cout << "any_expression" << "\n";}
+line:
+     LINEBREAK /*empty line*/
+    | statement LINEBREAK
+    | function_declaration LINEBREAK
     ;
 
-function_defintion:
-    function_header function_body {std::cout << "function_defintion" << "\n";}
+function_declaration:
+      KWD_FUNCTION IDENTIFIER OP_COLON function_parameters
     ;
 
-function_header:
-    FUNCTION NAME OP_COLON linebreak
-    function_parameter_definition OP_ARROW function_return_type_definition linebreak
-    {std::cout << "function_header" << "\n";}
-    ;
-
-function_parameter_definition:
-    variable_declaration  {std::cout << "function_parameter_definition" << "\n";}
-    | function_parameter_definition OP_COMMA variable_declaration {std::cout << "function_parameter_definition" << "\n";}
-    ;
-
-function_return_type_definition:
-    type {std::cout << "function_return_type_definition" << "\n";}
-    | type OP_COMMA function_return_type_definition {std::cout << "function_return_type_definition" << "\n";}
-    ;
-
-function_body:
-    statements {std::cout << "function_body" << "\n";}
-    ;
-
-statements:
-    statement {std::cout << "statements" << "\n";}
-    | statements statement {std::cout << "statements" << "\n";}
+function_parameters:
+      parameter_list OP_ARROW type_list
     ;
 
 statement:
-    _statement linebreak {std::cout << "statement\n";}
-    ;
-
-_statement:
-    expression {std::cout << "_statement" << "\n";}
-    | while_statement {std::cout << "_statement" << "\n";}
-    | void_statement {std::cout << "_statement" << "\n";}
+      expression
+    | data_field_definition
+    | while_statement
+    | result_statement
+    | if_statement
+    | else_if_statement
+    | else_statement
     ;
 
 while_statement:
-    while_statement_head linebreak statements {std::cout << "while_statement\n";}
+      KWD_WHILE expression OP_COLON
     ;
 
-while_statement_head:
-    WHILE expression OP_COLON {std::cout << "while_statement_head\n";}
+result_statement:
+      KWD_RESULT OP_COLON nonempty_argument_list
+    | KWD_RESULT OP_COLON KWD_NOTHING
     ;
 
-void_statement:
-    {std::cout << "void_statement\n";}
+if_statement:
+      KWD_IF expression OP_COLON
+    ;
+
+else_if_statement:
+      KWD_ELSE KWD_IF expression OP_COLON
+    ;
+
+else_statement:
+      KWD_ELSE OP_COLON
+    ;
+
+data_field_declaration:
+      type OP_COLON IDENTIFIER
+    ;
+
+data_field_definition:
+      type OP_COLON data_field_assigment_list
+    ;
+
+data_field_assigment_list:
+      assignment_expression
+    | data_field_assigment_list OP_COMMA assignment_expression
     ;
 
 expression:
-    variable_definition {std::cout << "expression" << "\n";}
-    | assignment {std::cout << "expression" << "\n";}
-    | call {std::cout << "expression" << "\n";}
-    | arithmetic_expression {std::cout << "expression" << "\n";}
-    | value {std::cout << "expression" << "\n";}
-    | NAME {std::cout << "expression" << "\n";}
+      assignment_expression
+    | arith_compare_expression
+    | function_call
+    | value
+    | IDENTIFIER
+    | OP_OPEN_ROUND_BRACKET expression OP_CLOSE_ROUND_BRACKET
     ;
 
-assignment:
-    NAME OP_ASSIGN expression {std::cout << "assignment" << "\n";}
+assignment_expression:
+      IDENTIFIER OP_ASSIGN expression
     ;
 
-call:
-    NAME OP_OPEN_ROUND_BRACKET call_parameter_list OP_CLOSE_ROUND_BRACKET {std::cout << "call" << "\n";}
-    ;
-
-call_parameter_list:
-    expression {std::cout << "call_parameter_list" << "\n";}
-    | call_parameter_list OP_COMMA expression {std::cout << "call_parameter_list" << "\n";}
-    | {std::cout << "call_parameter_list" << "\n";}
-    ;
-
-arithmetic_expression:
-    expression arithmetic_operator expression {std::cout << "arithmetic_expression" << "\n";}
+arith_compare_expression:
+      expression arithmetic_operator expression
+    | expression comparison_operator expression
     ;
 
 arithmetic_operator:
-    OP_PLUS {std::cout << "arithmetic_operator" << "\n";}
-    | OP_MINUS {std::cout << "arithmetic_operator" << "\n";}
-    | OP_STAR {std::cout << "arithmetic_operator" << "\n";}
-    | OP_SLASH {std::cout << "arithmetic_operator" << "\n";}
-    | arithmetic_operator_compare {std::cout << "arithmetic_operator" << "\n";}
+      OP_PLUS
+    | OP_MINUS
+    | OP_STAR
+    | OP_SLASH
+    | OP_PERCENT
     ;
 
-arithmetic_operator_compare:
-    OP_EQUAL {std::cout << "arithmetic_operator_compare" << "\n";}
-    | OP_UNEQUAL {std::cout << "arithmetic_operator_compare" << "\n";}
-    | OP_OPEN_ANGULAR_BRACKET {std::cout << "arithmetic_operator_compare" << "\n";}
-    | OP_CLOSE_ANGULAR_BRACKET {std::cout << "arithmetic_operator_compare" << "\n";}
-    | OP_SMALLER_EQ {std::cout << "arithmetic_operator_compare" << "\n";}
-    | OP_GREATER_EQ {std::cout << "arithmetic_operator_compare" << "\n";}
+comparison_operator:
+      OP_OPEN_ANGULAR_BRACKET
+    | OP_CLOSE_ANGULAR_BRACKET
+    | OP_SMALLER_EQ
+    | OP_GREATER_EQ
+    | OP_EQUAL
+    | OP_UNEQUAL
     ;
 
-variable_declaration:
-    type OP_COLON NAME {std::cout << "variable declaration" << "\n";}
+function_call:
+      IDENTIFIER OP_OPEN_ROUND_BRACKET argument_list OP_CLOSE_ROUND_BRACKET
     ;
 
-variable_definition:
-    variable_declaration OP_EQUAL NUMBER_VALUE {std::cout << "variable_definition" << "\n";}
+argument_list:
+      /*empty*/
+    | nonempty_argument_list
     ;
 
-type:
-    TEXT {std::cout << "type" << "\n";}
-    | NUMBER {std::cout << "type" << "\n";}
-    | NOTHING {std::cout << "type" << "\n";}
+nonempty_argument_list:
+      expression
+    | argument_list OP_COMMA expression
+    ;
+
+parameter_list:
+      data_field_declaration
+    | parameter_list OP_COMMA data_field_declaration
+    ;
+
+type_list:
+      type
+    | type_list OP_COMMA type
     ;
 
 value:
-    NUMBER_VALUE {std::cout << "value" << "\n";}
+      NUMBER
     ;
 
-linebreak:
-    LINEBREAK {std::cout << "linebreak" << "\n";}
-    | linebreak LINEBREAK {std::cout << "linebreak" << "\n";}
+type:
+      _type
+    | KWD_CONSTANT _type
     ;
+
+_type:
+      KWD_NUMBER
+    | KWD_NOTHING
+    | KWD_TEXT
+    ;
+
 %%
 void yyerror(const char *str)
 {
-    std::cout << "Error: " << loc << " \"" << yytext << "\" " << str << "\n";
+    std::cout << "Error: " << yylineno << " \"" << yytext << "\" " << str << "\n";
     exit(-1);
 }

@@ -4,77 +4,77 @@
 
     int indentCounter = 0;
     bool foundNonWhitespace = false;
-    int loc = 0;
 %}
 
 %option yylineno
+%option noyywrap
 
 UNSIGNED_NUMBER [0-9]+(\.[0-9]+)?
 
 %%
 Funktion    {
                 foundNonWhitespace = true;
-                return FUNCTION;
+                return KWD_FUNCTION;
             }
 
 wenn        {
                 foundNonWhitespace = true;
-                return IF;
+                return KWD_IF;
             }
 
 sonst       {
                 foundNonWhitespace = true;
-                return ELSE;
+                return KWD_ELSE;
             }
 
 Ergebnis    {
                 foundNonWhitespace = true;
-                return RESULT;
+                return KWD_RESULT;
             }
 
 Zahl        {
                 foundNonWhitespace = true;
-                return NUMBER;
+                return KWD_NUMBER;
             }
 
 Nichts      {
                 foundNonWhitespace = true;
-                return NOTHING;
+                return KWD_NOTHING;
             }
 
 Text        {
                 foundNonWhitespace = true;
-                return TEXT;
+                return KWD_TEXT;
             }
 
 Konstanter  {
                 foundNonWhitespace = true;
-                return CONSTANT;
+                return KWD_CONSTANT;
             }
 
 Konstante   {
                 foundNonWhitespace = true;
-                return CONSTANT;
+                return KWD_CONSTANT;
             }
 
 Konstantes  {
                 foundNonWhitespace = true;
-                return CONSTANT;
+                return KWD_CONSTANT;
             }
 
 Solange     {
                 foundNonWhitespace = true;
-                return WHILE;
+                return KWD_WHILE;
             }
 
 und         {
                 foundNonWhitespace = true;
-                return AND;
+                return KWD_AND;
             }
 
 oder        {
                 foundNonWhitespace = true;
-                return OR;
+                return KWD_OR;
             }
 
 :   {
@@ -192,28 +192,22 @@ oder        {
         return OP_EQUAL;
     }
 
-
 #.*                     {
                             
                         }
 
-\+?{UNSIGNED_NUMBER}    {
+[-+]?{UNSIGNED_NUMBER}  {
                             foundNonWhitespace = true;
-                            return NUMBER_VALUE;
-                        }
-
--{UNSIGNED_NUMBER}      {
-                            foundNonWhitespace = true;
-                            return NUMBER_VALUE;
+                            return NUMBER;
                         }
 
 [_A-Za-z][_A-Za-z0-9]*  {
                             foundNonWhitespace = true;
-                            return NAME;
+                            return IDENTIFIER;
                         }
 
 ^([ ]{4}|\t)            {
-                            indentCounter++; 
+                            indentCounter++;
                         }
 
 ([ ]{4}|\t)             {
@@ -226,7 +220,6 @@ oder        {
 \n                      {
                             indentCounter = 0;
                             foundNonWhitespace = false;
-                            loc++;
                             return LINEBREAK;
                         }
 
@@ -239,8 +232,3 @@ oder        {
                             exit(-2);
                         }
 %%
-
-extern "C" int yywrap(void)
-{
-
-}
