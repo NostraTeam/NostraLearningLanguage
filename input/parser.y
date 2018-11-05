@@ -41,6 +41,8 @@
 %token OP_OPEN_CURLY_BRACKET
 %token OP_CLOSE_CURLY_BRACKET
 
+%token BLOCK_OPEN
+%token BLOCK_CLOSE
 %token LINEBREAK
 
 %token <dval>   NUMBER
@@ -90,7 +92,8 @@ function_parameters:
     ;
 
 statement:
-      expression
+      BLOCK_OPEN statement
+    | expression
     | data_field_definition
     | while_statement
     | result_statement

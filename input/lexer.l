@@ -3,6 +3,7 @@
     #include "parser.hpp"
 
     int indentCounter = 0;
+    int lastIndent = 0;
     bool foundNonWhitespace = false;
 %}
 
@@ -208,16 +209,29 @@ oder        {
 
 ^([ ]{4}|\t)            {
                             indentCounter++;
+
+                            if(indentCounter > lastIndent)
+                            {
+                                std::cout << "BLOCK_OPEN" << "\n";
+                            
+                                return BLOCK_OPEN;
+                            }
                         }
 
 ([ ]{4}|\t)             {
                             if(indentCounter > 0 && !foundNonWhitespace)
-                            {
                                 indentCounter++;
+
+                            if(indentCounter > lastIndent)
+                            {
+                                std::cout << "BLOCK_OPEN" << "\n";
+                            
+                                return BLOCK_OPEN;
                             }
                         }
 
 \n                      {
+                            lastIndent = indentCounter;
                             indentCounter = 0;
                             foundNonWhitespace = false;
                             return LINEBREAK;
